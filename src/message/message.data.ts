@@ -5,6 +5,7 @@ import {
   ChatMessageDocument,
   chatMessageToObject,
   ChatMessageModel,
+  Tag,
 } from './models/message.model';
 import { ChatMessage, PaginatedChatMessages } from './models/message.entity';
 import { MessageDto, GetMessageDto } from './models/message.dto';
@@ -29,6 +30,7 @@ export class MessageData {
     chatMessage.conversationId = data.conversationId;
     chatMessage.created = new Date();
     chatMessage.deleted = false;
+    chatMessage.tags = data.tags ?? [];
 
     createRichContent(data, chatMessage);
 
@@ -364,5 +366,16 @@ export class MessageData {
     }
 
     return chatMessageToObject(updatedResult);
+  }
+
+  async updateTags(messageId: ObjectID, tags: Tag[]): Promise<ChatMessage> {
+    const result = await this.chatMessageModel.findOneAndUpdate(
+      { _id: messageId },
+      { $set: { tags } },
+      { new: true },
+    );
+    if (!result) throw new Error('Could not update tags on message');
+
+    return chatMessageToObject(result);
   }
 }

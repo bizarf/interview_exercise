@@ -6,6 +6,7 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { ObjectID } from 'mongodb';
+import { Tag } from './message.model';
 
 export enum GifType {
   Gif = 'gif',
@@ -118,6 +119,9 @@ export class MessageDto {
 
   @Field(() => RichContentDto, { nullable: true })
   richContent?: RichContentDto;
+
+  @Field(() => Tag, { nullable: true })
+  tags?: Tag[];
 }
 
 // TODO Min - Max on limit
